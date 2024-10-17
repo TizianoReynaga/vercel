@@ -1,39 +1,71 @@
 import { useState } from 'react';
-import { auth } from '../lib/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import styles from '../app/css/Register.module.css'; // Importar los estilos de Register
+import { useRouter } from 'next/navigation'; // Importar useRouter para redirigir
 
 const Register = () => {
+  const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleRegister = async () => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('User registered:', userCredential.user);
-    } catch (error) {
-      setError('Error during registration, please try again.');
-      console.error('Error during registration:', error);
+  const handleRegister = () => {
+    if (!email || !password || !confirmPassword) {
+      setError('Todos los campos son obligatorios');
+      return;
     }
+
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
+    // Redirigir a la página de verificación
+    router.push('/verify');
   };
 
   return (
-    <div>
-      <h1>Register</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>TITULO</h1>
+
       <input
         type="email"
-        placeholder="Email"
+        placeholder="Correo electrónico"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        className={styles.inputField}
+        required
       />
+
       <input
         type="password"
-        placeholder="Password"
+        placeholder="Contraseña"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        className={styles.inputField}
+        required
       />
-      <button onClick={handleRegister}>Register</button>
-      {error && <p>{error}</p>}
+
+      <input
+        type="password"
+        placeholder="Confirmar contraseña"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        className={styles.inputField}
+        required
+      />
+
+      <button onClick={handleRegister} className={styles.button}>
+        Entrar
+      </button>
+
+      {error && <p className={styles.error}>{error}</p>}
+
+      <div className={styles.linkContainer}>
+        <a href="/login" className={styles.link}>
+          Iniciar sesión
+        </a>
+      </div>
     </div>
   );
 };

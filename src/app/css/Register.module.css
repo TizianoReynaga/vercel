@@ -1,0 +1,68 @@
+/* Register.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.inputField {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.button {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  font-size: 1rem;
+  color: #000;
+  background-color: transparent;
+  border: 1px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-bottom: 16px; /* Añadido para mantener el espacio uniforme */
+}
+
+.button:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.error {
+  color: red;
+  margin-top: 8px;
+  font-size: 0.875rem;
+}
+
+.linkContainer {
+  margin-top: 16px; /* Añade un margen superior al enlace para que sea consistente con Login */
+}
+
+.link {
+  font-size: 0.875rem;
+  color: #0070f3;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
