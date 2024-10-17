@@ -12,15 +12,20 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Inicializar Firebase
+// Inicializar Firebase solo si las credenciales están disponibles
+if (!firebaseConfig.apiKey) {
+  throw new Error('Missing Firebase configuration values');
+}
+
 const app = initializeApp(firebaseConfig);
 
-// Inicializar Analytics si está disponible
+// Inicializar Analytics solo en el lado del cliente
 let analytics;
 if (typeof window !== 'undefined') {
   analytics = getAnalytics(app);
 }
 
+// Inicializar Auth
 const auth = getAuth(app);
 
 export { auth, analytics };
