@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { auth } from '../lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import styles from '../app/css/Login.module.css'; // Importar los estilos desde un archivo CSS modular
+import Link from 'next/link';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -46,9 +48,9 @@ const Login = () => {
       {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.linkContainer}>
-        <a href="/register" className={styles.link}>
+        <Link href="/register" className={styles.link}>
           Crear cuenta
-        </a>
+        </Link>
       </div>
     </div>
   );
