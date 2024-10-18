@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styles from '../app/css/Register.module.css'; // Importar los estilos de Register
 import { useRouter } from 'next/navigation'; // Importar useRouter para redirigir
+import Link from 'next/link';
+
 
 const Register = () => {
   const router = useRouter();
@@ -61,11 +63,9 @@ const Register = () => {
 
       {error && <p className={styles.error}>{error}</p>}
 
-      <div className={styles.linkContainer}>
-        <a href="/login" className={styles.link}>
-          Iniciar sesión
-        </a>
-      </div>
+      <Link href="/login" className={styles.link}>
+      Crear cuenta
+       </Link>
     </div>
   );
 };

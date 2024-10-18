@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { auth } from '../lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import styles from '../app/css/Login.module.css'; // Importar los estilos desde un archivo CSS modular
+import styles from '../app/css/Login.module.css';
+import Link from 'next/link';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in:', userCredential.user);
-      setError(null); // Limpiar el error si el login es exitoso
-    } catch (err: unknown) {
+    } catch (error) {
       setError('Error durante el inicio de sesión, revisa tus credenciales.');
-      console.error('Error during login:', err);
+      console.error('Error during login:', error);
     }
   };
 
@@ -46,9 +46,9 @@ const Login = () => {
       {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.linkContainer}>
-        <a href="/register" className={styles.link}>
+        <Link href="/register" className={styles.link}>
           Crear cuenta
-        </a>
+        </Link>
       </div>
     </div>
   );
