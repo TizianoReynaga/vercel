@@ -1,50 +1,54 @@
+import { useState } from 'react';
 import { auth } from '../lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useState } from 'react';
-import styles from '../app/css/Login.module.css'; // Importar los estilos de Register
-
-import Link from 'next/link';
-
+import styles from '../app/css/Login.module.css'; // Importar los estilos desde un archivo CSS modular
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async () => {
-    if (!auth) {
-      console.error('Firebase Auth no está inicializado. Esto puede deberse a un problema con la configuración.');
-      return;
-    }
-
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Usuario autenticado:', userCredential.user);
-    } catch (error) {
-      console.error('Error en la autenticación:', error);
+      console.log('User logged in:', userCredential.user);
+      setError(null); // Limpiar el error si el login es exitoso
+    } catch (err: unknown) {
+      setError('Error durante el inicio de sesión, revisa tus credenciales.');
+      console.error('Error during login:', err);
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>TITULO</h1>
+
       <input
         type="email"
-        placeholder="Email"
+        placeholder="Correo electrónico"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        className={styles.input}
       />
+
       <input
         type="password"
-        placeholder="Password"
+        placeholder="Contraseña"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        className={styles.input}
       />
-      <button onClick={handleLogin}>Iniciar sesión</button>
+
+      <button onClick={handleLogin} className={styles.button}>
+        Entrar
+      </button>
+
+      {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.linkContainer}>
-        <Link href="/registro" className={styles.link}>
-          Registro
-        </Link>
+        <a href="/register" className={styles.link}>
+          Crear cuenta
+        </a>
       </div>
     </div>
   );
