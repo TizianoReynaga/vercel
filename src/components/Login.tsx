@@ -7,8 +7,13 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    if (!auth) {
+      console.error('Firebase Auth no está inicializado. Esto puede deberse a un problema con la configuración.');
+      return;
+    }
+
     try {
-      const userCredential = await signInWithEmailAndPassword(auth!, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('Usuario autenticado:', userCredential.user);
     } catch (error) {
       console.error('Error en la autenticación:', error);
