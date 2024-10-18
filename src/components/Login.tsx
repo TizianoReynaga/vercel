@@ -1,6 +1,10 @@
 import { auth } from '../lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
+import styles from '../app/css/Login.module.css'; // Importar los estilos de Register
+
+import Link from 'next/link';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -36,6 +40,12 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleLogin}>Iniciar sesión</button>
+
+      <div className={styles.linkContainer}>
+        <Link href="/registro" className={styles.link}>
+          Registro
+        </Link>
+      </div>
     </div>
   );
 };
