@@ -1,42 +1,62 @@
 import { useState } from 'react';
-import styles from '../app/css/Register.module.css'; // Importar los estilos de Register
-import { useRouter } from 'next/navigation'; // Importar useRouter para redirigir
-import Link from 'next/link';
-
+import { useRouter } from 'next/navigation';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { auth, db } from '../lib/firebase'; // Importa tu configuración de Firebase y Firestore
+import { doc, setDoc } from 'firebase/firestore';
+import styles from '../css/Register.module.css';
 
 const Register = () => {
   const router = useRouter();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isTrialUser, setIsTrialUser] = useState(false); // Estado para el tipo de usuario
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
-  const handleRegister = () => {
-    if (!email || !password || !confirmPassword) {
-      setError('Todos los campos son obligatorios');
-      return;
-    }
-
+  const handleRegister = async () => {
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
 
-    // Redirigir a la página de verificación
-    router.push('/verify');
+    try {
+      // Crear el usuario en Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Enviar el correo de verificación
+      await sendEmailVerification(userCredential.user);
+
+      // Guardar información del usuario en Firestore
+      const sanitizedEmail = email.replace(/\./g, '_');
+      await setDoc(doc(db, 'users', sanitizedEmail), {
+        userType: isTrialUser ? 'trial' : 'full', // Guardar si es usuario de prueba o completo
+        email: email,
+      });
+
+      // Mostrar mensaje indicando que se envió el correo de verificación
+      setMessage('Correo de verificación enviado. Por favor, revisa tu bandeja de entrada.');
+
+      // Redirigir al login después de unos segundos
+      setTimeout(() => {
+        router.push('/login');
+      }, 5000);
+    } catch (error) {
+      console.error('Error al registrar el usuario:', error);
+      setError('Error al registrar. Por favor, intenta de nuevo.');
+    }
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>TITULO</h1>
+      <h1 className={styles.title}>Registro</h1>
 
       <input
         type="email"
         placeholder="Correo electrónico"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className={styles.inputField}
-        required
+        className={styles.input}
       />
 
       <input
@@ -44,28 +64,38 @@ const Register = () => {
         placeholder="Contraseña"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className={styles.inputField}
-        required
+        className={styles.input}
       />
 
       <input
         type="password"
-        placeholder="Confirmar contraseña"
+        placeholder="Confirmar Contraseña"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
-        className={styles.inputField}
-        required
+        className={styles.input}
       />
+
+      <label className={styles.checkboxContainer}>
+        <input
+          type="checkbox"
+          checked={isTrialUser}
+          onChange={() => setIsTrialUser(!isTrialUser)}
+        />
+        Registrar como usuario de prueba
+      </label>
 
       <button onClick={handleRegister} className={styles.button}>
         Entrar
       </button>
 
       {error && <p className={styles.error}>{error}</p>}
+      {message && <p className={styles.message}>{message}</p>}
 
-      <Link href="/login" className={styles.link}>
-      Crear cuenta
-       </Link>
+      <div className={styles.linkContainer}>
+        <a href="/login" className={styles.link}>
+          Iniciar sesión
+        </a>
+      </div>
     </div>
   );
 };
